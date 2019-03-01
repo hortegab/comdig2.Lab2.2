@@ -9,17 +9,26 @@ import numpy
 #######################################################
 ##               Forma rectangular                   ##
 #######################################################                       
-def rect(Sps):
-    return Sps*[1.,]
+def rect(Sps,ntaps):
+    h=ntaps*[0,]
+    for n in range(Sps):
+        k=int(ntaps/2) # esto es para que h[n] quede centrada en la mitad del vector
+        h[k-n]=1.
+    return h
 
 #######################################################
 ##               Forma de Nyquist                    ##
 #######################################################                       
 def nyq(Sps,ntaps):
-    n=numpy.linspace(-int(ntaps/2), int(ntaps/2-1),ntaps)
-    h=numpy.sinc(n/Sps)
-#    return h/numpy.amax(h)
-    return h
+    ntaps_min=-int(ntaps/2)
+    ntaps_max=abs(ntaps_min)-1+int(math.ceil(ntaps/2.-abs(ntaps_min)))
+    h=ntaps*[0,]
+    for n in range(ntaps):
+        k=n-ntaps/2. # esto es para que h[n] quede centrada en la mitad del vector
+        h[n]=numpy.sinc(k/Sps)
+    Amp=numpy.amax(h)
+    return h/Amp
+
 #######################################################
 ##               Forma Coseno Alzado                 ##
 #######################################################                       
@@ -36,6 +45,7 @@ def rcos(Sps,ntaps,beta):
                 h[n]=numpy.sinc(k/Sps)*math.cos(beta*k*math.pi/Sps)/(1.-(2.*beta*k/Sps)**2)                
     Amp=numpy.amax(h)
     return h/Amp
+
 #######################################################
 ##            Forma Raiz de Coseno Alzado            ##
 #######################################################                       
